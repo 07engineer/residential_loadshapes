@@ -3,7 +3,7 @@
 #' End use coefficients are calculated with a regression approach in the analytical calculator. This function reads them in, 
 #' and updates the EnergyPlus input file with the new values.  
 #'
-#' @param coeff_path
+#' @param coefficients_path
 #' 
 #' 
 #' 
@@ -13,12 +13,12 @@
 #' update_enduse_coefficients()
 
 
-#coeff_path = coefficients_path
-#coeff_file_name = coefficients_file
+#coefficients_path = coefficients_path
+#coefficients_file = coefficients_file
 
 update_enduse_coefficients <- function(coefficients_path, coefficients_file, file_00){
   
-  files_coefficients <- dir(coeff_path)
+  files_coefficients <- dir(coefficients_path)
   EPD_constituents <- c("Cooking", 
                         "Dishwasher", 
                         "Dryer", 
@@ -29,7 +29,7 @@ update_enduse_coefficients <- function(coefficients_path, coefficients_file, fil
                         "Washer",
                         "Lighting") 
   
-  coeffs <- read_csv(str_c(coeff_path, coeff_file_name, sep = "/")) %>% 
+  coeffs <- read_csv(str_c(coefficients_path, coefficients_file, sep = "/")) %>% 
     filter(cec_end_use %in% EPD_constituents, year == 2014 )%>% 
     mutate(weight_ratio = weight / sum(weight)) %>% 
     select(cec_end_use, weight_ratio) %>%

@@ -56,3 +56,19 @@ JtoKW <- function(df){
   return(df)
 }
 
+#' Delete some of the extra files from the folder with the batch executable RunDirMulti.bat
+#'
+#' This function searches for fields in a dataframe representing an EnergyPlus output for units if [J] and then
+#' converts them into units of [kW].
+#' @param path Folder location relative to working directory
+#' @keywords EnergyPlus,Model Data, Calibration
+#' @export
+#' @examples
+#' clean_RunDirMulti_folder(sim_path)
+
+clean_RunDirMulti_folder <- function(path){
+  files <- dir(path)
+  keep <- which(str_detect(files, "RunDirMulti.bat|\\.idf|\\.err|Meter"))
+  discard <- files[-keep]
+  file.remove(str_c(path, discard, sep = "/"))
+}

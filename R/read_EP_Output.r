@@ -7,12 +7,15 @@
 #' @examples
 #' read_EP_Output("parametricModel1_Outputs.csv")
 #' 
+
+#fileName <- "MF-GAS-LOW-HIGHMeter.csv"
+
 read_EP_Output <- function(fileName){
   out <- read_csv(fileName)
-  out <- out[49:nrow(out),]                                                 #' Delete design days
+                                                    # Delete design days
   names(out)[1] = "date"
   
-  fixDate <- function(df, year){                                            #' Add year to the date, format
+  fixDate <- function(df, year){                                            # Add year to the date, format
     dateTime <- ldply(strsplit(as.character(df$date), split = " ")) %>%
       rename(dayMonth = V1, time = V3) %>%
       select(-V2)
@@ -25,8 +28,9 @@ read_EP_Output <- function(fileName){
   }
   
   out <- fixDate(out, "2014")
+  Jan_1_row <- which(out$date == min(out$date)) # Delete design days
+  out <- out[Jan_1_row:nrow(out),]
   out <- JtoKW(out) 
-  #%>%
-  #  mutate(EUI = `ElectricityNet:Facility`)
+
 }
 

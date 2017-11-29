@@ -16,7 +16,7 @@
 #coeff_path = coefficients_path
 #coeff_file_name = coefficients_file
 
-update_enduse_coefficients <- function(coeff_path, coeff_file_name, file_00){
+update_enduse_coefficients <- function(coefficients_path, coefficients_file, file_00){
   
   files_coefficients <- dir(coeff_path)
   EPD_constituents <- c("Cooking", 
@@ -26,7 +26,8 @@ update_enduse_coefficients <- function(coeff_path, coeff_file_name, file_00){
                         "Miscellaneous", 
                         "Refrigerator", 
                         "Television", 
-                        "Washer") 
+                        "Washer",
+                        "Lighting") 
   
   coeffs <- read_csv(str_c(coeff_path, coeff_file_name, sep = "/")) %>% 
     filter(cec_end_use %in% EPD_constituents, year == 2014 )%>% 

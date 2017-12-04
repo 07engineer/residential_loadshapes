@@ -1,6 +1,6 @@
 #' Change Setpoint Schedules
 #'
-#' The analytic models produce schedules. We need to update the EnergyPlus schedule files with the new end-uses.
+#' Replaces schedule columns with ones in a research schedule file
 #'
 #'
 #' @param building_subctegory Building Subcategory
@@ -16,11 +16,17 @@ subcategory_schedule <- read_csv(str_c("schedules/", building_subcategory, ".csv
 
 setpoint_research_schedule <- read_csv(str_c("schedules/", "setpoint_research.csv"))
 
-subcategory_schedule$Heating <- setpoint_research_schedule$Heating
-subcategory_schedule$Cooling <- setpoint_research_schedule$Cooling
+new_col_names <- names(setpoint_research_schedule)[names(setpoint_research_schedule) != "Schedule"]
+
+for(i in new_col_names){
+  subcategory_schedule[, i] <- setpoint_research_schedule[, i]
+}
 
 write_csv(subcategory_schedule, str_c("schedules/", building_subcategory, ".csv"))
 }
+
+# subcategory_schedule$Heating <- setpoint_research_schedule$Heating
+# subcategory_schedule$Cooling <- setpoint_research_schedule$Cooling
 
 # energyplus_start_date = min(subcategory_schedule$date)
 # energyplus_end_date   = max(subcategory_schedule$date)

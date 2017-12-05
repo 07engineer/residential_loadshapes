@@ -49,13 +49,13 @@ update_schedule <- function(){
   energyplus_schedule[, cols_to_update] <- analytic_schedule[, cols_to_update]
   
   # Adjust the setpoint schedules
-  analytic_schedule$cdd_base <- as.numeric(analytic_schedule$cdd_base)
-  normalized_analytic_cdd_changepoints <- (analytic_schedule$cdd_base - mean(analytic_schedule$cdd_base)) / sd(analytic_schedule$cdd_base)
-  setpoint_mean <- 23 # degrees Celsius
-  setpoint_sd <- 3 # degrees Celsius
-  heat_set_gap <- 5 # degrees Celsius
-  energyplus_schedule$Cooling <- normalized_analytic_cdd_changepoints * setpoint_sd + setpoint_mean
-  energyplus_schedule$Heating <- energyplus_schedule$Cooling - heat_set_gap
+  # analytic_schedule$cdd_base <- as.numeric(analytic_schedule$cdd_base)
+  # normalized_analytic_cdd_changepoints <- (analytic_schedule$cdd_base - mean(analytic_schedule$cdd_base)) / sd(analytic_schedule$cdd_base)
+  # setpoint_mean <- 23 # degrees Celsius
+  # setpoint_sd <- 3 # degrees Celsius
+  # heat_set_gap <- 5 # degrees Celsius
+  # energyplus_schedule$Cooling <- normalized_analytic_cdd_changepoints * setpoint_sd + setpoint_mean
+  # energyplus_schedule$Heating <- energyplus_schedule$Cooling - heat_set_gap
   
   #write_csv(energyplus_schedule, "Residential_sch.csv")
   write_csv(energyplus_schedule, str_c("schedules/", building_subcategory, ".csv"))

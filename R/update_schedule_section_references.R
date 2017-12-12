@@ -8,10 +8,7 @@
 #' 
 #'
 #'
-#' @param
-#' 
-#' 
-#' 
+#' @param building_subcategory Building type
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples

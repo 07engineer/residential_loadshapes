@@ -2,7 +2,7 @@
 #'
 #' The meter files by utility are too big and calibrations tend to be done by zone
 #'  
-#' @param meter_path
+#' @param meter_path Path to meter data
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples

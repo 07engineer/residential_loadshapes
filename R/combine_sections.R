@@ -1,9 +1,7 @@
-
 #' Combine EnergyPlus Input File Sections
 #'
 #' At ADM we divide the EnergyPlus input files into various sections to make things easier. 
 #'   
-#'
 #' @param building_subcategory Name of the EnergyPlus run
 #' @param file_00 The first input file section
 #' @keywords EnergyPlus, Parametrics, Calibration

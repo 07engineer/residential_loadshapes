@@ -31,6 +31,5 @@ read_EP_Output <- function(fileName){
   Jan_1_row <- which(out$date == min(out$date)) # Delete design days
   out <- out[Jan_1_row:nrow(out),]
   out <- JtoKW(out) 
-
 }
 

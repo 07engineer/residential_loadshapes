@@ -3,8 +3,6 @@
 #' EnergyPlus is launched using a batch file. Inside are paths which need updating. 
 #' This function uses the working directory to make these updates.
 #'
-#'
-#' @param 
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples

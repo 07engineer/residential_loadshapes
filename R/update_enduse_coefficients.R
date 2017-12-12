@@ -3,15 +3,14 @@
 #' End use coefficients are calculated with a regression approach in the analytical calculator. This function reads them in, 
 #' and updates the EnergyPlus input file with the new values.  
 #'
-#' @param coefficients_path
-#' 
-#' 
+#' @param coefficients_path Path to coefficients
+#' @param coefficients_file Path to coefficients
+#' @param file_00 Path to coefficients
 #' 
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples
 #' update_enduse_coefficients()
-
 
 #coefficients_path = coefficients_path
 #coefficients_file = coefficients_file

@@ -1,7 +1,7 @@
 #' Add Schedule Columns
 #'
 #' This function ...
-#' @param df
+#' @param df dataframe with a 'date' column
 #' @keywords Autocalibration,EnergyPlus
 #' @export
 #' @examples

@@ -1,9 +1,7 @@
-#' Create Parametric Section of EnergyPlus Input File Section
+#' Create Parametric File
 #'
-#' At ADM we divide the EnergyPlus input files into various sections to make things easier. 
+#' Create Parametric Section of EnergyPlus Input File Section 
 #'   
-#'
-#' @param run_name Name of the EnergyPlus run
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples

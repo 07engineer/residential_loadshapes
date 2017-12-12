@@ -1,0 +1,207 @@
+---
+title: "Load Shapes: Autocalibration"
+output:
+prettydoc::html_pretty:
+theme: architect
+highlight: github
+
+---
+
+```{r echo = FALSE, message = FALSE, warning= FALSE}
+library(plyr)
+library(tidyverse)
+library(knitr)
+library(lubridate)
+library(stringr)
+library(residential)
+#options(digits=2)
+
+opts_chunk$set(echo=FALSE, cache = FALSE, message = FALSE, warning = FALSE)
+```
+
+## Calibration Plots
+
+```{r}
+
+sim_path = "L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/2017-11-29 residential FCZ12 update/FCZ12_ALL_GAS_LOW"
+billing_data_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Cleaned Data/engineering"
+
+sim_file <- "FCZ12_ALL_GAS_LOW-Run78Meter.csv"
+
+zone = 12
+
+# Read in billing data file 
+billing_data <- read_csv(str_c(billing_data_path, "/FCZ", zone, ".csv")) %>%
+  mutate(date = ymd_hms(str_c(date, " ", hour, ":00:00")))
+
+# Pick apart the simulation file name to get building subcategory for meter data filter
+run_elements <- str_split(str_replace(sim_file, "Meter.csv", ""), "_")[[1]]
+#zone <- as.integer(str_replace_all(run_elements[1], "[[:alpha:]]", "")) 
+level <- str_replace(run_elements[4], "-Run", "")%>% 
+      str_replace_all("[:digit:]", "")
+type <- run_elements[2]
+fuel <- run_elements[3]
+
+sim <- read_EP_Output(str_c(sim_path, sim_file, sep = "/")) %>%
+  rename(kW_sim = `ElectricityNet:Facility`)
+
+results <- billing_data %>%
+  filter(usage_level == level, 
+         heat_fuel == fuel, 
+         iou_building_type == type) %>%
+  select(kW_bills = kW, TemperatureF) %>%
+  bind_cols(select(sim, date, kW_sim)) %>%
+  select(date, everything()) %>%
+  mutate(kW_bills  = kW_bills / sum(kW_bills), 
+         kW_sim = kW_sim / sum(kW_sim))
+  # mutate(kW_bills_norm  = kW_bills / sum(kW_bills), 
+  #        kW_sim_norm = kW_sim / sum(kW_sim))
+
+results <- add_schedule_columns(results)
+
+results_long <- results %>% 
+  select(date, kW_sim, kW_bills, month, wday, hour, weekend, TemperatureF) %>% 
+  gather(source, kW, kW_sim:kW_bills)
+
+ggplot(results_long, aes(x = date, y = kW, color = source)) + geom_point() + ggtitle("Energy Over Time (hourly)")
+
+# ggplot(results_long, aes(x = date, y = TemperatureF, color = source)) + geom_point() + ggtitle("Temperature Over Time")
+
+
+# ggplot(results_long, aes(x = TemperatureF, y = kW, color = source)) + geom_point() + ggtitle("Power as a function of TempF")
+
+
+ggplot(results_long, aes(x = date, y = kW, color = source)) + geom_line() + xlim(mdy_hm("1/15/2014 1:00"), mdy_hm("1/22/2014 1:00")) + 
+  ggtitle("Sample winter Week")
+ggplot(results_long, aes(x = date, y = kW, color = source)) + geom_line() + xlim(mdy_hm("7/20/2014 1:00"), mdy_hm("7/27/2014 1:00")) + 
+  ggtitle("Sample Summer Week")
+ggplot(results_long, aes(x = date, y = kW, color = source)) + geom_line() + xlim(mdy_hm("4/15/2014 1:00"), mdy_hm("4/22/2014 1:00")) + 
+  ggtitle("Sample Spring Week")
+
+# Daily Averages
+daily <- results_long %>% 
+  mutate(date = floor_date(date, unit = "day")) %>% 
+  group_by(date, source) %>% 
+  summarise(kW = mean(kW), TemperatureF = mean(TemperatureF))
+
+ggplot(daily, aes(x = TemperatureF, y = kW, color = source)) + geom_point() + ggtitle("Daily Avg Power as a Function of TempF")
+
+daily$Temp_bin <- cut(daily$TemperatureF, 15)
+
+ggplot(daily, aes(x = Temp_bin, y = kW)) + geom_violin() + facet_wrap(~source) + ggtitle("Daily Avg TempF Bin Visual")
+ggplot(daily, aes(x = Temp_bin, y = kW, color = source)) + geom_violin() + ggtitle("Daily Avg TempF Bin Visual")
+ggplot(daily, aes(x = date, y = kW, color = source)) + geom_point() + ggtitle("Daily Avg Energy Over Time")
+
+# Monthly 
+monthly <- results_long %>%
+  group_by(source, month) %>%
+  summarise(sum_kW = sum(kW, na.rm = TRUE)) 
+
+ggplot(monthly, aes(x = month, y = sum_kW, fill = source)) + geom_bar(position = "dodge", stat = "identity") + ggtitle("Total kWh/ft^2 per month")
+
+
+```
+
+### Read in the EnergyPlus meter output file and compare magnitudes
+
+```{r}
+meter <- sim
+
+names(meter) <- names(meter) %>%
+  str_replace(":Electricity", "")
+
+meter_long <- meter %>% 
+  gather(key = "enduse", value = "kW", -date)
+
+# # Only keep top 5 contributors: 
+# top5 <- meter_long %>% 
+#   group_by(enduse) %>% 
+#   summarise(mean_kW = mean(kW)) %>% 
+#   arrange(desc(mean_kW))
+# 
+# meter_long <- meter_long %>% 
+#   filter(enduse %in% top5$enduse[1:5])
+
+
+ggplot(meter_long, aes(x = date, y = kW, color = enduse, linetype = enduse)) + geom_line() +
+  xlim(mdy_hm("1/15/2014 1:00"), mdy_hm("1/22/2014 1:00")) + 
+  ggtitle("Sample winter Week")
+
+ggplot(meter_long, aes(x = date, y = kW, color = enduse, linetype = enduse)) + geom_line() +  
+  xlim(mdy_hm("7/20/2014 1:00"), mdy_hm("7/27/2014 1:00")) + 
+  ggtitle("Sample Summer Week")
+
+```
+
+
+
+### Error Calculations 
+
+The percent error for several relevant time slices are plotted below. 
+
+```{r}
+##################################
+#### Calculate Errors ############
+##################################
+
+percent_error <- function(bills, simulation) {
+  round((mean(simulation) - mean(bills)) / mean(simulation) * 100)
+}
+
+results <- add_schedule_columns(results)
+
+slices <- tibble()
+slice <- results %>% 
+  filter(weekend == "weekday", 
+         hour > 13 & hour <= 18,
+         month == "Jul" | month == "Aug") %>% 
+  mutate(sliceName = "summer_weekday_afternoons") 
+
+slices <- slice
+
+slice <- results %>% 
+  filter(weekend == "weekday", 
+         hour > 1 & hour <= 4,
+         month == "Mar" | month == "Apr") %>% 
+  mutate(sliceName = "spring_nights") 
+
+slices <- slices %>% bind_rows(slice)
+
+slice <- results %>% 
+  filter(weekend == "weekday", 
+         hour > 7 & hour <= 11,
+         month == "Jan" | month == "Feb") %>% 
+  mutate(sliceName = "winter_mornings") 
+
+slices <- slices %>% bind_rows(slice)
+
+slice <- results %>% 
+  filter(weekend == "weekend", 
+         hour > 1 & hour <= 4,
+         month == "Jun" | month == "Jul") %>% 
+  mutate(sliceName = "weekend_daytime") 
+
+slices <- slices %>% bind_rows(slice)
+
+calibration_errors <- slices %>% 
+  group_by(sliceName) %>% 
+  summarise(percent_error = percent_error(kW_bills, kW_sim))
+
+NMBE <- calc_NMBE(results$kW_sim, results$kW_bills) 
+CVRMSE <- calc_CVRMSE(results$kW_sim, results$kW_bills)  
+
+kable(calibration_errors)
+
+ggplot(calibration_errors, aes(x = sliceName, y = percent_error)) + geom_col()
+
+
+write.csv(daily, "daily.csv")
+```
+
+For the entire year,  
+The NMBE is `r NMBE`.   
+The CVRMSE is `r CVRMSE`.   
+
+Simulation Total Annual Energy: `r sum(sim$kW_sim)`  
+Billing Total Annual Energy: `r sum(billing_data$kW)`  
+Percent difference: `r (sum(sim$kW_sim) - sum(billing_data$kW)) / sum(billing_data$kW) * 100` %    

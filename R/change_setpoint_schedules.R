@@ -40,7 +40,8 @@ change_setpoint_schedules <- function(){
   # ggplot(setpoint_experiments, aes(x = TemperatureF, y = setpoint_bump)) + geom_point()
   
   energyplus_schedule <- energyplus_schedule %>% 
-    mutate(Cooling = Cooling + setpoint_experiments$setpoint_bump)
+    mutate(Cooling = Cooling + setpoint_experiments$setpoint_bump, 
+           Heating = Heating + setpoint_experiments$setpoint_bump)
 
 write_csv(energyplus_schedule, str_c("schedules/", building_subcategory, ".csv"))
 }

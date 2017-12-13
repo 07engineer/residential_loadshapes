@@ -35,12 +35,12 @@ change_setpoint_schedules <- function(){
     bind_cols(select(energyplus_schedule, Heating, Cooling)) %>%
     mutate(setpoint_bump = ifelse(TemperatureF - anamoly_changepoint > 0, anamoly_changepoint - TemperatureF, 0))
   
-  ggplot(setpoint_experiments, aes(x = date, y = TemperatureF)) + geom_point()
-  ggplot(setpoint_experiments, aes(x = date, y = setpoint_bump)) + geom_point()
-  ggplot(setpoint_experiments, aes(x = TemperatureF, y = setpoint_bump)) + geom_point()
+  # ggplot(setpoint_experiments, aes(x = date, y = TemperatureF)) + geom_point()
+  # ggplot(setpoint_experiments, aes(x = date, y = setpoint_bump)) + geom_point()
+  # ggplot(setpoint_experiments, aes(x = TemperatureF, y = setpoint_bump)) + geom_point()
   
   energyplus_schedule <- energyplus_schedule %>% 
-    Cooling = Cooling + setpoint_experiments$setpoint_bump
+    mutate(Cooling = Cooling + setpoint_experiments$setpoint_bump)
 
 write_csv(energyplus_schedule, str_c("schedules/", building_subcategory, ".csv"))
 }

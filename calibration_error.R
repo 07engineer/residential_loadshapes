@@ -44,8 +44,11 @@ for(i in 1:length(sim_files)){
     identifier[i] <- str_c(type, fuel, level, sep = "_")  
     RMSE_all[i] <- sqrt(mean((results$kW_sim_norm - results$kW_bills_norm)^2))
     
+    # peaks <- results %>% 
+    #   filter(kW_bills > summary(results$kW_bills)["3rd Qu."])
+    
     peaks <- results %>% 
-      filter(kW_bills > summary(results$kW_bills)["3rd Qu."])
+      filter(kW_bills > 0.8 * max(kW_bills))
     
     RMSE_peaks[i] <- sqrt(mean((peaks$kW_sim_norm - peaks$kW_bills_norm)^2))
     runs[i] <- run

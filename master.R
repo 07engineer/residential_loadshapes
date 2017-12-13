@@ -111,7 +111,7 @@ update_schedule()
 #### Update Setpoint Schedules ##########
 #########################################
 
-#change_setpoint_schedules(building_subcategory, "setpoint_research.csv")
+change_setpoint_schedules(anamoly_changepoint = 80, max_drop = 20)
 
 # }
 # }

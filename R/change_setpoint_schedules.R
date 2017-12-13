@@ -8,7 +8,7 @@
 #' change_setpoint_schedules(building_subcategory, setpoint_research.csv)
 
 
-change_setpoint_schedules <- function(){
+change_setpoint_schedules <- function(anamoly_changepoint = 80, max_drop = 20){
   # Grab billing data for temperature column
   billing_data_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Cleaned Data/engineering"
  
@@ -28,12 +28,12 @@ change_setpoint_schedules <- function(){
   energyplus_start_date = min(energyplus_schedule$date)
   energyplus_end_date   = max(energyplus_schedule$date)
 
-  anamoly_changepoint <- 80 # Deg F, where the kW spikes
+  
   
   
   setpoint_experiments <- select(billing_data, date, kW, TemperatureF) %>%
     bind_cols(select(energyplus_schedule, Heating, Cooling)) %>%
-    mutate(setpoint_bump = ifelse(TemperatureF - anamoly_changepoint > 0, anamoly_changepoint - TemperatureF, 0))
+    mutate(setpoint_bump = ifelse(TemperatureF - anamoly_changepoint > 0, (anamoly_changepoint - TemperatureF) / (max(TemperatureF) - anamoly_changepoint) * max_drop, 0))
   
   # ggplot(setpoint_experiments, aes(x = date, y = TemperatureF)) + geom_point()
   # ggplot(setpoint_experiments, aes(x = date, y = setpoint_bump)) + geom_point()

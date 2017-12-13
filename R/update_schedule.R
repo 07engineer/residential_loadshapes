@@ -25,9 +25,9 @@ update_schedule <- function(){
   # In the energy plus schedule, they are actual setpoints. 
   # John said not to update these. 
   
-  do_not_update <- c("date", "hdd_base", "cdd_base")
+  #do_not_update <- c("date", "hdd_base", "cdd_base")
   cols_to_update <- names(energyplus_schedule)[names(energyplus_schedule) %in% names(analytic_schedule)]
-  cols_to_update <- cols_to_update[!(cols_to_update %in% do_not_update)]
+  #cols_to_update <- cols_to_update[!(cols_to_update %in% do_not_update)]
   analytic_schedule <- analytic_schedule[, cols_to_update]
 
   #Check that no schedule values are outside zero and one

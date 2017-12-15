@@ -46,7 +46,7 @@ change_setpoint_schedules <- function(anamoly_changepoint = 70, max_drop = 20, c
   
   energyplus_schedule <- energyplus_schedule %>% 
     mutate(Cooling = cooling_setpoint + setpoint_experiments$setpoint_bump, 
-           Heating = cooling - heating_set_delta)
+           Heating = Cooling - heating_set_delta)
   
   
   # energyplus_schedule <- energyplus_schedule %>% 

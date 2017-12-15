@@ -8,7 +8,7 @@
 #' change_setpoint_schedules(building_subcategory, setpoint_research.csv)
 
 
-change_setpoint_schedules <- function(anamoly_changepoint = 80, max_drop = 20){
+change_setpoint_schedules <- function(anamoly_changepoint = 70, max_drop = 20, cooling_setpoint = 24, heating_set_delta = 2){
   # Grab billing data for temperature column
   billing_data_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Cleaned Data/engineering"
  
@@ -28,20 +28,30 @@ change_setpoint_schedules <- function(anamoly_changepoint = 80, max_drop = 20){
   energyplus_start_date = min(energyplus_schedule$date)
   energyplus_end_date   = max(energyplus_schedule$date)
 
+  # Read in wet bulb file for filtering: 
+  wb <- read.csv("weather/FCZ12_mean_wb.csv")
   
-  
-  
-  setpoint_experiments <- select(billing_data, date, kW, TemperatureF) %>%
+  setpoint_experiments <- select(wb, wb) %>%
     bind_cols(select(energyplus_schedule, Heating, Cooling)) %>%
-    mutate(setpoint_bump = ifelse(TemperatureF - anamoly_changepoint > 0, (anamoly_changepoint - TemperatureF) / (max(TemperatureF) - anamoly_changepoint) * max_drop, 0))
+    mutate(setpoint_bump = ifelse(wb - anamoly_changepoint > 0, (anamoly_changepoint - wb) / (max(wb) - anamoly_changepoint) * max_drop, 0))
   
+  
+  # setpoint_experiments <- select(billing_data, date, kW, TemperatureF) %>%
+  #   bind_cols(select(energyplus_schedule, Heating, Cooling)) %>%
+  #   mutate(setpoint_bump = ifelse(TemperatureF - anamoly_changepoint > 0, (anamoly_changepoint - TemperatureF) / (max(TemperatureF) - anamoly_changepoint) * max_drop, 0))
+  # 
   # ggplot(setpoint_experiments, aes(x = date, y = TemperatureF)) + geom_point()
   # ggplot(setpoint_experiments, aes(x = date, y = setpoint_bump)) + geom_point()
   # ggplot(setpoint_experiments, aes(x = TemperatureF, y = setpoint_bump)) + geom_point()
   
   energyplus_schedule <- energyplus_schedule %>% 
-    mutate(Cooling = Cooling + setpoint_experiments$setpoint_bump, 
-           Heating = Heating + setpoint_experiments$setpoint_bump)
+    mutate(Cooling = cooling_setpoint + setpoint_experiments$setpoint_bump, 
+           Heating = cooling - heating_set_delta)
+  
+  
+  # energyplus_schedule <- energyplus_schedule %>% 
+  #   mutate(Cooling = Cooling + setpoint_experiments$setpoint_bump, 
+  #          Heating = Heating + setpoint_experiments$setpoint_bump)
 
 write_csv(energyplus_schedule, str_c("schedules/", building_subcategory, ".csv"))
 }

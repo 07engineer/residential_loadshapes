@@ -111,7 +111,7 @@ update_schedule()
 #### Update Setpoint Schedules ##########
 #########################################
 
-change_setpoint_schedules(anamoly_changepoint = 80, max_drop = 20)
+change_setpoint_schedules(anamoly_changepoint = 70, max_drop = 20, cooling_setpoint = 24, heating_set_delta = 2)
 
 # }
 # }

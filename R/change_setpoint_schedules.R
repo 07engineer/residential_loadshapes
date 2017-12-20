@@ -19,7 +19,8 @@ change_setpoint_schedules <- function(anamoly_changepoint = 70, max_drop = 20, c
                    iou_building_type == family)
   
   
-  energyplus_schedule <- read_csv(str_c("schedules/", building_subcategory, ".csv")) 
+  energyplus_schedule <- read_csv(str_c("schedules/", building_subcategory, ".csv")) %>% 
+    mutate(Schedule = mdy_hm(Schedule))
   
   
   # energyplus_schedule <- read_csv("Residential_sch.csv") %>%
@@ -32,9 +33,19 @@ change_setpoint_schedules <- function(anamoly_changepoint = 70, max_drop = 20, c
   wb <- read.csv("weather/FCZ12_mean_wb.csv")
   
   setpoint_experiments <- select(wb, wb) %>%
-    bind_cols(select(energyplus_schedule, Heating, Cooling)) %>%
-    mutate(setpoint_bump = ifelse(wb - anamoly_changepoint > 0, (anamoly_changepoint - wb) / (max(wb) - anamoly_changepoint) * max_drop, 0))
+  #setpoint_experiments <- wb %>%
+    bind_cols(select(energyplus_schedule, Schedule, Heating, Cooling)) %>%
+    mutate(setpoint_bump = ifelse(wb - anamoly_changepoint > 0, (anamoly_changepoint - wb) / (max(wb) - anamoly_changepoint) * max_drop, 0)) %>% 
+    mutate(date = date(Schedule))
   
+  # Change setpoint for entire day to maximum change for that day 
+  daily_max <- setpoint_experiments  %>% 
+    group_by(date) %>% 
+    summarise(setpoint_bump_day = min(setpoint_bump))
+  
+  setpoint_experiments <- setpoint_experiments %>% 
+    left_join(daily_max) %>%
+    mutate(setpoint_bump = setpoint_bump_day)
   
   # setpoint_experiments <- select(billing_data, date, kW, TemperatureF) %>%
   #   bind_cols(select(energyplus_schedule, Heating, Cooling)) %>%

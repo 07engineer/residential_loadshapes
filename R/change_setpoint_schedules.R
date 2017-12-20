@@ -2,6 +2,10 @@
 #'
 #' Replaces schedule columns with calculated values
 #'
+#' @param anamoly_changepoint The temperature in F at which power consumption accelerates 
+#' @param max_drop The maximum we want the setpoint to drop 
+#' @param cooling_setpoint The unadjusted thermostat cooling setpoint in C 
+#' @param heating_set_delta How nuch lower than the cooling setpoint we want the heating setpoint to be in C
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples

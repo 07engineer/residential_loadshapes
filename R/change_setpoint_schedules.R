@@ -9,8 +9,7 @@
 #' @keywords EnergyPlus, Parametrics, Calibration
 #' @export
 #' @examples
-#' change_setpoint_schedules(building_subcategory, setpoint_research.csv)
-
+#' change_setpoint_schedules(anamoly_changepoint = 69, max_drop = 25, cooling_setpoint = 29, heating_set_delta = 10)
 
 change_setpoint_schedules <- function(anamoly_changepoint = 70, max_drop = 20, cooling_setpoint = 24, heating_set_delta = 2){
   # Grab billing data for temperature column
@@ -40,7 +39,7 @@ change_setpoint_schedules <- function(anamoly_changepoint = 70, max_drop = 20, c
   #setpoint_experiments <- wb %>%
     bind_cols(select(energyplus_schedule, Schedule, Heating, Cooling)) %>%
     mutate(setpoint_bump = ifelse(wb - anamoly_changepoint > 0, (anamoly_changepoint - wb) / (max(wb) - anamoly_changepoint) * max_drop, 0)) %>% 
-    mutate(date = date(Schedule))
+    mutate(date = as_date(Schedule))
   
   # Change setpoint for entire day to maximum change for that day 
   daily_max <- setpoint_experiments  %>% 

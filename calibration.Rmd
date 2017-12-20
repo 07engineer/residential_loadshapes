@@ -110,6 +110,9 @@ meter <- sim
 names(meter) <- names(meter) %>%
   str_replace(":Electricity", "")
 
+# Ditch names with a colon
+meter <- meter[,!str_detect(names(meter), ":")]
+
 meter_long <- meter %>% 
   gather(key = "enduse", value = "kW", -date)
 

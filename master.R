@@ -6,10 +6,10 @@ library(readr)
 library(devtools)
 
 # FOR DJ ONLY
-# document("residential")
-# install("residential")
+# document("residential_loadshapes")
+# install("residential_loadshapes")
 
-# FOR OTHER USERS, if there are code updates: 
+# FOR OTHER USERS, if there are code updates:
 install_github("07engineer/residential_loadshapes")
 
 library(residential)
@@ -17,6 +17,7 @@ library(residential)
 rm(list = ls())
 
 # Set your working directory to the location of this file.
+setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11")
 # setwd("~/2016-11-08 Load Shapes 1631/2017-11-29 residential FCZ12 update")
 # setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/2017-11-29 residential FCZ12 update")
 
@@ -28,11 +29,11 @@ pre_processor_path = "C:\\EnergyPlusV8-5-0\\PreProcess\\ParametricPreProcessor\\
 #batch_files_to_delete <- dir("EP_input_batch")[!dir("EP_input_batch") %in% "RunDirMulti.bat"]
 #file.remove(str_c("EP_input_batch", batch_files_to_delete, sep = "/"))
 
-# For debugging or individual runs: 
-family = "ALL" # "SINGLEFAMILY" or "MULTIFAMILY" , or "ALL" for FCZ12
+# For debugging or individual runs:
+family = "SINGLEFAMILY" # "SINGLEFAMILY" or "MULTIFAMILY" , or "ALL" for FCZ12
 fuel = "ELECTRIC" # Must be "GAS" or "ELECTRIC"
 size = "HIGH"  #Must be "LOW", "MEDIUM", "HIGH"
-climate_zone = "FCZ12"
+climate_zone = "FCZ1"
 
 # # For batch runs
 # families = c("SINGLEFAMILY", "MULTIFAMILY")
@@ -77,26 +78,26 @@ file.remove(str_c("EP_output", dir("EP_output"), sep = "/"))
 update_schedule_section_references(building_subcategory)
 
 #########################################
-#### Update Enduse Coefficients ######### 
+#### Update Enduse Coefficients #########
 #########################################
 
 update_enduse_coefficients(coefficients_path, coefficients_file, file_00)
 
 #########################################
-#### Combine Sections ################### 
+#### Combine Sections ###################
 #########################################
 
 combine_sections(building_subcategory, file_00)
 
 #########################################
-#### Run Parametric Pre-processor ####### 
+#### Run Parametric Pre-processor #######
 #########################################
 
 files_before_PP = dir("EP_input")
 system(str_c(pre_processor_path, " EP_input", "\\", building_subcategory, ".idf"))
 files_after_PP = dir("EP_input")
-runs <- files_after_PP %>% 
-  str_subset(str_c(building_subcategory, "-")) 
+runs <- files_after_PP %>%
+  str_subset(str_c(building_subcategory, "-"))
 file.copy(str_c("EP_input", runs, sep = "/"), str_c("EP_input_batch", runs, sep = "/"), overwrite = TRUE)
 
 #########################################
@@ -111,7 +112,7 @@ update_schedule()
 #### Update Setpoint Schedules ##########
 #########################################
 
-change_setpoint_schedules(anamoly_changepoint = 70, max_drop = 20, cooling_setpoint = 24, heating_set_delta = 2)
+# change_setpoint_schedules(anamoly_changepoint = 70, max_drop = 20, cooling_setpoint = 24, heating_set_delta = 2)
 
 # }
 # }
@@ -119,7 +120,7 @@ change_setpoint_schedules(anamoly_changepoint = 70, max_drop = 20, cooling_setpo
 # }
 
 #########################################
-#### Update RunEPlus.bat         ######## 
+#### Update RunEPlus.bat         ########
 #########################################
 
 update_RunEPlus_batch()

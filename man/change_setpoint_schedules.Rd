@@ -4,18 +4,23 @@
 \alias{change_setpoint_schedules}
 \title{Change Setpoint Schedules}
 \usage{
-change_setpoint_schedules(building_subcategory, research_schedule_name)
+change_setpoint_schedules(anamoly_changepoint = 70, max_drop = 20,
+  cooling_setpoint = 24, heating_set_delta = 2)
 }
 \arguments{
-\item{research_schedule_name}{A schedule of setpoints to try}
+\item{anamoly_changepoint}{The temperature in F at which power consumption accelerates}
 
-\item{building_subctegory}{Building Subcategory}
+\item{max_drop}{The maximum we want the setpoint to drop}
+
+\item{cooling_setpoint}{The unadjusted thermostat cooling setpoint in C}
+
+\item{heating_set_delta}{How nuch lower than the cooling setpoint we want the heating setpoint to be in C}
 }
 \description{
 Replaces schedule columns with calculated values
 }
 \examples{
-change_setpoint_schedules(building_subcategory, setpoint_research.csv)
+change_setpoint_schedules(anamoly_changepoint = 69, max_drop = 25, cooling_setpoint = 29, heating_set_delta = 10)
 }
 \keyword{Calibration}
 \keyword{EnergyPlus,}

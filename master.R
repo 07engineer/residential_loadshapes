@@ -30,7 +30,7 @@ pre_processor_path = "C:\\EnergyPlusV8-5-0\\PreProcess\\ParametricPreProcessor\\
 #file.remove(str_c("EP_input_batch", batch_files_to_delete, sep = "/"))
 
 # For debugging or individual runs:
-family = "SINGLEFAMILY" # "SINGLEFAMILY" or "MULTIFAMILY" , or "ALL" for FCZ12
+family = "MULTIFAMILY" # "SINGLEFAMILY" or "MULTIFAMILY" , or "ALL" for FCZ12
 fuel = "ELECTRIC" # Must be "GAS" or "ELECTRIC"
 size = "HIGH"  #Must be "LOW", "MEDIUM", "HIGH"
 climate_zone = "FCZ1"
@@ -39,8 +39,8 @@ climate_zone = "FCZ1"
 # families = c("SINGLEFAMILY", "MULTIFAMILY")
 # fuels = c("GAS", "ELECTRIC")
 # sizes = c("LOW", "MEDIUM", "HIGH")
-# climate_zones = str_c("FCZ", 1:11)
-
+# climate_zones = str_c("FCZ", 2:11)
+#
 # for(i in seq_along(families)){
 # for(j in seq_along(fuels)){
 # for(k in seq_along(sizes)){
@@ -98,7 +98,7 @@ system(str_c(pre_processor_path, " EP_input", "\\", building_subcategory, ".idf"
 files_after_PP = dir("EP_input")
 runs <- files_after_PP %>%
   str_subset(str_c(building_subcategory, "-"))
-file.copy(str_c("EP_input", runs, sep = "/"), str_c("EP_input_batch", runs, sep = "/"), overwrite = TRUE)
+file.copy(str_c("EP_input", runs, sep = "/"), str_c("EP_input_batch_2", runs, sep = "/"), overwrite = TRUE)
 
 #########################################
 #### Update EnergyPlus Schedules ########

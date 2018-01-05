@@ -32,36 +32,8 @@ update_schedule <- function(){
 
   # #Check that no schedule values are outside zero and one
 
-  # VECTORIZED VERSION BELOW RETURNING ZEROS FOR TELEVISION FOR UNKNOWN REASON :(
-  # fix_schedule_bounds <- function(vector){
-  #   if(max(vector) > 1){
-  #     warning("Analytic schedule had values > 1. They were set to 1.")
-  #     vector[vector > 1] <- 1
-  #   }
-  #   if(min(vector) < 0){
-  #     warning("Analytic schedule had values < 0. They were set to 0.")
-  #     vector[vector < 0] <- 0
-  #   }
-  #   return(vector)
-  # }
-
-  #analytic_schedule <- as_tibble(apply(analytic_schedule, 2, fix_schedule_bounds))
-
-  # Using loop version for stability
-
-  for(i in 1:ncol(analytic_schedule)){
-    if(class(analytic_schedule[,i]) == "numeric") {
-      if(max(analytic_schedule[,i]) > 1){
-        warning("Analytic schedule had values > 1. They were set to 1.")
-        analytic_schedule[,i][analytic_schedule[,i] > 1] <- 1
-      }
-      if(min(analytic_schedule[,i]) < 0){
-        warning("Analytic schedule had values < 0. They were set to 0.")
-        analytic_schedule[,i][analytic_schedule[,i] < 0] <- 0
-      }
-    }
-  }
-
+  analytic_schedule[analytic_schedule < 0] <- 0
+  analytic_schedule[analytic_schedule > 1] <- 1
 
   # Remember not to change the column order of the EnergyPlus file columns! They are referenced in the .idf file
   energyplus_schedule[, cols_to_update] <- analytic_schedule[, cols_to_update]

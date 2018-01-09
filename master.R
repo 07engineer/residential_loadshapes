@@ -40,7 +40,7 @@ pre_processor_path = "C:\\EnergyPlusV8-5-0\\PreProcess\\ParametricPreProcessor\\
 families = c("SINGLEFAMILY", "MULTIFAMILY")
 fuels = c("GAS", "ELECTRIC")
 sizes = c("LOW", "MEDIUM", "HIGH")
-climate_zones = str_c("FCZ", 7:11)
+climate_zones = str_c("FCZ", 3:6)
 
 for(m in seq_along(climate_zones)){
   climate_zone = climate_zones[m]

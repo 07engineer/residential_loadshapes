@@ -23,12 +23,12 @@ opts_chunk$set(echo=FALSE, cache = FALSE, message = FALSE, warning = FALSE)
 
 ```{r}
 
-sim_path = "L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/2017-11-29 residential FCZ12 update/FCZ12_ALL_GAS_LOW"
+sim_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11/FCZ1"
 billing_data_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Cleaned Data/engineering"
 
-sim_file <- "FCZ12_ALL_GAS_LOW-Run78Meter.csv"
+sim_file <- "FCZ1_SINGLEFAMILY_GAS_LOW-Run9Meter.csv"
 
-zone = 12
+zone = 1
 
 # Read in billing data file 
 billing_data <- read_csv(str_c(billing_data_path, "/FCZ", zone, ".csv")) %>%

@@ -1,5 +1,9 @@
 
-sim_path = "L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11/FCZ1"
+zone_numbers = 5:6
+for(zone_num in zone_numbers){
+sim_path = str_c("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11/FCZ", zone_num)
+
+if(dir.exists(str_c(sim_path, "/errors")) == FALSE) dir.create(str_c(sim_path, "/errors"))
 
 # sim_path = "L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/2017-11-29 residential FCZ12 update/FCZ12_ALL_GAS_LOW"
 # sim_path <- ("~/2016-11-08 Load Shapes 1631/2017-11-29 residential FCZ12 update/EP_input_batch")
@@ -70,10 +74,7 @@ for(j in 1:length(subcategories)){
     runs[i] <- run
 
     cat(sim_files[i], "\n")
-  } # for loop
-
-
-
+  } # loop of individual files
 
 batch_errors <- tibble(file = subcategory_files,
                        subsector = identifier,
@@ -83,8 +84,8 @@ batch_errors <- tibble(file = subcategory_files,
   left_join(parametrics)
 
 write.csv(batch_errors, str_c(zone, "/errors/", building_subcategory,"_errors.csv"))
-}
-
+} # building subcategories
+} # climate zones
 
 # min_batch_errors <- batch_errors %>%
 # group_by(subsector) %>%

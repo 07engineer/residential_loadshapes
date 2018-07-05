@@ -4,6 +4,7 @@ library(stringr)
 library(lubridate)
 library(readr)
 library(devtools)
+library(purrr)
 
 # FOR DJ ONLY
 # document("residential_loadshapes")
@@ -48,7 +49,7 @@ fuels = c("GAS", "ELECTRIC")
 #sizes = c("LOW", "MEDIUM", "HIGH", "ALL")
 sizes = "ALL"
 # climate_zones = str_c("FCZ", 1:11)
-climate_zones = str_c("FCZ", 1:4)
+climate_zones = str_c("FCZ", 5)
 
 for(m in seq_along(climate_zones)){
   climate_zone = climate_zones[m]

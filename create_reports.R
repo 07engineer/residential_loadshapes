@@ -13,18 +13,20 @@
 #'
 
 
-create_report_of_best_run <- function(batch_errors){
-  judgement_column = "error_all"
-  best_rownum = which(batch_errors[, judgement_column] == max(batch_errors[, judgement_column]))
+create_report_of_best_run <- function(batch_errors, zone_num){
+  judgement_column =  "error_peak" # use "error_peak" or "error_all"
+  best_rownum = which(batch_errors[, judgement_column] == min(batch_errors[, judgement_column]))
   best_file = as.character(batch_errors[best_rownum, "file"])
 
   markdown_file <- str_split(read_file("residential_loadshapes/calibration.Rmd"),  "\r\n")[[1]]
 
   sim_path_index  <- which(str_detect(markdown_file, "sim_path <- "))
   file_name_index <- which(str_detect(markdown_file, "sim_file <- "))
+  zone_num_index <- which(str_detect(markdown_file, "zone <- "))
 
   markdown_file[sim_path_index]  <- str_c("sim_path <- \"", sim_path, "\"")
   markdown_file[file_name_index] <- str_c("sim_file <- \"", best_file, "\"")
+  markdown_file[zone_num_index] <- str_c("zone <-  ", zone_num)
 
   markdown_file <- str_c(markdown_file, collapse = "\r\n")
 
@@ -36,7 +38,7 @@ create_report_of_best_run <- function(batch_errors){
   rmarkdown::render(str_c("FCZ", zone_num, "/reports/", rmd_filename))
 }
 
-zone_numbers = 1:7
+zone_numbers = 9:11
 for(zone_num in zone_numbers){
   cat("Generating calibration reports for zone ", zone_num, ".\n")
 
@@ -48,7 +50,7 @@ for(zone_num in zone_numbers){
 
   #batch_errors <- list_of_error_dataframes[[1]]
 
-  map(list_of_error_dataframes, create_report_of_best_run)
+  map(list_of_error_dataframes, function(x) create_report_of_best_run(x, zone_num))
 }
 
 

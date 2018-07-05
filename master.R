@@ -17,34 +17,42 @@ library(residential)
 rm(list = ls())
 
 # Set your working directory to the location of this file.
-setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11")
+setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 06252018")
+# setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11")
 # setwd("~/2016-11-08 Load Shapes 1631/2017-11-29 residential FCZ12 update")
 # setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/2017-11-29 residential FCZ12 update")
 
-analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Results/Schedules/Final"
-coefficients_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Constrained Regression Coefficients"
+# analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Blended"
+analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Subtracted"
+#analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 020118/Results/Schedules"
+#analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Results/Schedules/Final"
+
+coefficients_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 020118/Results/EUIs"
+#coefficients_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Constrained Regression Coefficients"
 pre_processor_path = "C:\\EnergyPlusV8-5-0\\PreProcess\\ParametricPreProcessor\\parametricpreprocessor"
 
 
-# For debugging or individual runs:
-# family = "MULTIFAMILY" # "SINGLEFAMILY" or "MULTIFAMILY" , or "ALL" for FCZ12
-# fuel = "ELECTRIC" # Must be "GAS" or "ELECTRIC"
-# size = "HIGH"  #Must be "LOW", "MEDIUM", "HIGH"
+# # For debugging or individual runs:
+# family = "MULTIFAMILY" # "SINGLEFAMILY" or "MULTIFAMILY" or "ALL" for FCZ12
+# fuel = "ELECTRIC" # Must be "GAS" or "ELECTRIC" or "ALL"
+# size = "HIGH"  #Must be "LOW" or "MEDIUM" or "HIGH" or "ALL"
 # climate_zone = "FCZ2"
 
 # Clean out batch folder if you want
-#batch_files_to_delete <- dir("EP_input_batch")[!dir("EP_input_batch") %in% "RunDirMulti.bat"]
-#file.remove(str_c("EP_input_batch", batch_files_to_delete, sep = "/"))
+ batch_files_to_delete <- dir("EP_input_batch")[!dir("EP_input_batch") %in% "RunDirMulti.bat"]
+ file.remove(str_c("EP_input_batch", batch_files_to_delete, sep = "/"))
 
 # For batch runs
 families = c("SINGLEFAMILY", "MULTIFAMILY")
 fuels = c("GAS", "ELECTRIC")
-sizes = c("LOW", "MEDIUM", "HIGH")
-climate_zones = str_c("FCZ", 3:6)
+#sizes = c("LOW", "MEDIUM", "HIGH", "ALL")
+sizes = "ALL"
+# climate_zones = str_c("FCZ", 1:11)
+climate_zones = str_c("FCZ", 1:4)
 
 for(m in seq_along(climate_zones)){
   climate_zone = climate_zones[m]
-  batch_folder <- climate_zone
+   batch_folder <- climate_zone
 
 for(i in seq_along(families)){
 for(j in seq_along(fuels)){
@@ -55,32 +63,32 @@ for(k in seq_along(sizes)){
 
   if(family == "SINGLEFAMILY" & fuel == "GAS") {
     file_00 <- "00_SF_Model_gasfurnace_crawlspace.idf"
-  } else if(family == "SINGLEFAMILY" & fuel == "ELECTRIC") {
-    file_00 <- "00_SF_Model_elecres_crawlspace.idf"
+  } else if(family == "SINGLEFAMILY" & fuel == "ELECTRIC"){
+    file_00 <- "00_SF_Model_hp_crawlspace.idf"
   } else if(family == "MULTIFAMILY" & fuel == "GAS"){
     file_00 <- "00_MF_Model_gasfurnace_crawlspace.idf"
   } else if(family == "MULTIFAMILY" & fuel == "ELECTRIC"){
-    file_00 <- "00_MF_Model_elecres_crawlspace.idf"
-  } else if (family == "ALL" & fuel == "GAS"){
-    file_00 <- "00_SF_Model_gasfurnace_crawlspace.idf"
+    file_00 <- "00_MF_Model_hp_crawlspace.idf"
   } else {
-    file_00 <- "00_SF_Model_elecres_crawlspace.idf"
+    file_00 <- "00_SF_Model_gasfurnace_crawlspace.idf"
   }
 
 building_subcategory = str_c(climate_zone, family, fuel, size, sep = "_")
+building_subcategory_schedule = str_c(climate_zone, family, "ALL", size, sep = "_")
 cat("\nBUILDING SUBCATEGORY: ", building_subcategory, "\n")
-analytic_schedule_file <- str_c(climate_zone, family,"Usage_Level", size, fuel, "Schedules.csv", sep = "_")
-coefficients_file <- str_c(climate_zone, family,"Usage_Level", size, fuel, "coefficients.csv", sep = "_")
+#analytic_schedule_file <- str_c(climate_zone, family,"Usage_Level", size, fuel, "Schedules.csv", sep = "_")
+analytic_schedule_file <- str_c(climate_zone, family,"Usage_Level", "ALL", "ALL", "Schedules.csv", sep = "_")
+#coefficients_file <- str_c(climate_zone, family,"Usage_Level", size, fuel, "coefficients.csv", sep = "_")
+coefficients_file <- str_c(climate_zone, family,"Usage_Level", "ALL", "ALL", "coefficients.csv", sep = "_")
 
 file.remove(str_c("EP_input" , dir("EP_input") , sep = "/"))
-file.remove(str_c("EP_output", dir("EP_output"), sep = "/"))
 
 #########################################
 #### Update Schedule Section References #
 #########################################
 
 cat("Updating schedule references in .idf file. \n")
-update_schedule_section_references(building_subcategory)
+update_schedule_section_references(building_subcategory_schedule)
 
 #########################################
 #### Update Enduse Coefficients #########

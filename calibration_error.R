@@ -1,5 +1,5 @@
 
-zone_numbers = 5:6
+zone_numbers = 4 #5:6
 for(zone_num in zone_numbers){
 sim_path = str_c("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/FCZ1_FCZ11/FCZ", zone_num)
 
@@ -84,6 +84,7 @@ batch_errors <- tibble(file = subcategory_files,
   left_join(parametrics)
 
 write.csv(batch_errors, str_c(zone, "/errors/", building_subcategory,"_errors.csv"))
+
 } # building subcategories
 } # climate zones
 

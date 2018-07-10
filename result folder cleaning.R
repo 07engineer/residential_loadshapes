@@ -1,5 +1,6 @@
 result_folders <- dir("L:/EnergyPlus/")
 
+
 for(m in 1:length(result_folders)){
   clean_EP_output_folder(str_c("L:/EnergyPlus/", result_folders[m]))
 }
@@ -12,7 +13,7 @@ for(m in 1:length(result_folders)){
 # }
 
 start_time <- now()
-clean_EP_output_folder("L:/EnergyPlus/FCZ11")
+clean_EP_output_folder("L:/EnergyPlus/2018-07-03 residential subtracted/FCZ1")
 now() - start_time
 
 

@@ -48,7 +48,10 @@ update_schedule <- function(){
   # energyplus_schedule$Heating <- energyplus_schedule$Cooling - heat_set_gap
 
   #write_csv(energyplus_schedule, "Residential_sch.csv")
-  write_csv(energyplus_schedule, str_c("schedules/", building_subcategory, ".csv"))
+  #write_csv(energyplus_schedule, str_c("schedules/", building_subcategory, ".csv"))
+  write_csv(energyplus_schedule, str_c(EP_schedule_path, building_subcategory, ".csv"))
+
+
 }
 
 

@@ -9,6 +9,9 @@ walk(1:12, function(x) dir.create(str_c("L:/EnergyPlus/2018-07-03 residential bl
 
 # Create schededules:
 
+
+fuels = "ALL"
+
 for(m in seq_along(climate_zones)){
   climate_zone = climate_zones[m]
   # batch_folder <- climate_zone

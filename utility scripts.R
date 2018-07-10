@@ -5,6 +5,7 @@ template_dir <- "L:/EnergyPlus/2018-07-03 residential miscOrig/"
 
 #create empty folders for each climate zone
 walk(1:12, function(x) dir.create(str_c("FCZ", x)))
+walk(1:12, function(x) dir.create(str_c("L:/EnergyPlus/2018-07-03 residential blended/FCZ", x)))
 
 # Create schededules:
 

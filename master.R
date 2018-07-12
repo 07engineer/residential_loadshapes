@@ -23,8 +23,8 @@ setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 062520
 # setwd("~/2016-11-08 Load Shapes 1631/2017-11-29 residential FCZ12 update")
 # setwd("L:/P/1631/Task 4 - Baseline Profiles/Residential Calibrated Models 09182017/2017-11-29 residential FCZ12 update")
 
- analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Blended"
-# analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Subtracted"
+# analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Blended"
+ analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Subtracted"
 # analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 062518/Results/Schedules/Misc-Original"
 #analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 020118/Results/Schedules"
 #analytic_schedule_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Results/Schedules/Final"
@@ -33,15 +33,15 @@ coefficients_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Proce
 #coefficients_path <- "L:/P/1631/Task 4 - Baseline Profiles/Residential Pre-Processor 091417/Data/Constrained Regression Coefficients"
 pre_processor_path = "C:\\EnergyPlusV8-5-0\\PreProcess\\ParametricPreProcessor\\parametricpreprocessor"
 
-#EP_runs_path = "L:/EnergyPlus/2018-07-03 residential subtracted/"
+EP_runs_path = "L:/EnergyPlus/2018-07-03 residential subtracted/"
 #EP_runs_path = "L:/EnergyPlus/2018-07-03 residential miscOrig/"
-EP_runs_path = "L:/EnergyPlus/2018-07-03 residential blended/"
+#EP_runs_path = "L:/EnergyPlus/2018-07-03 residential blended/"
 
 
 # EP_schedule_path = "L:/EnergyPlus/schedules_res/"
 # EP_schedule_path = "L:/EnergyPlus/schedules_miscOrig/"
-# EP_schedule_path = "L:/EnergyPlus/schedules_subtracted/"
- EP_schedule_path = "L:/EnergyPlus/schedules_blended/"
+ EP_schedule_path = "L:/EnergyPlus/schedules_subtracted/"
+# EP_schedule_path = "L:/EnergyPlus/schedules_blended/"
 
 
 
@@ -61,7 +61,7 @@ fuels = c("GAS", "ELECTRIC")
 #sizes = c("LOW", "MEDIUM", "HIGH", "ALL")
 sizes = "ALL"
 # climate_zones = str_c("FCZ", 1:11)
-climate_zones = str_c("FCZ", 1:11)
+climate_zones = str_c("FCZ", 2:11)
 
 for(m in seq_along(climate_zones)){
   climate_zone = climate_zones[m]
